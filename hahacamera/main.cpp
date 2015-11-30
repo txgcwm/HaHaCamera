@@ -8,13 +8,18 @@ int main(int argc, char *args[])
 	filterMgr.AddFilter(Haha::FilterType::GlassFilter);
 	cv::Mat frame;
 	cv::VideoCapture camera(0);
+	if (!camera.isOpened())
+	{
+		std::cout << "***Could not initialize capturing...***\n";
+		return 0;
+	}
 	while (true)
 	{
-		if (!camera.isOpened())
-		{
-			cv::waitKey(10); continue;
-		}
 		camera >> frame;
+		if (frame.empty())
+		{
+			break;
+		}
 		//do filters
 		filterMgr.Affects(frame);
 

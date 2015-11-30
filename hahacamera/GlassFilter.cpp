@@ -38,7 +38,7 @@ void Haha::GlassFilterImpl::Affect(cv::Mat& img)
 		DetectionEye(img(faces[0]), eyes);
 
 		if (eyes.size() >= 2) {
-			auto eye_center1 = cv::Point2f(faces[0].x + eyes[0].x + eyes[0].width / 2, faces[0].y + eyes[0].y + eyes[0].height / 2);
+			auto eye_center1 = cv::Point2f(faces[0].x + eyes[0].x + static_cast<float>( eyes[0].width ) / 2, faces[0].y + eyes[0].y + static_cast<float>( eyes[0].height ) / 2);
 			auto eye_center2 = cv::Point2f(faces[0].x + eyes[1].x + eyes[1].width / 2, faces[0].y + eyes[1].y + eyes[1].height / 2);
 			auto center_point = cv::Point2f((eye_center1.x + eye_center2.x) * 0.5f, (eye_center1.y + eye_center2.y) * 0.5f);
 			auto eyes_distance = std::sqrt(std::pow(eye_center1.x - eye_center2.x, 2)
