@@ -39,7 +39,6 @@ void Haha::GlassFilterImpl::Affect(cv::Mat& img)
 	DetectionFace(img, faces);
 
 	if (faces.size() >= 1) {
-		std::vector<cv::Rect> eyes;
 		auto faceX = faces[0].x <= 0 ? 0 : faces[0].x;
 		faceX = faceX > img.cols ? img.cols : faceX;
 		auto faceY = faces[0].y <= 0 ? 0 : faces[0].y;
@@ -47,7 +46,11 @@ void Haha::GlassFilterImpl::Affect(cv::Mat& img)
 		auto faceWidth = faceX + faces[0].width >= img.cols ? img.cols - faceX : faces[0].width;
 		auto faceHeight = faceY + faces[0].height >= img.rows ? img.rows - faceY : faces[0].height;
 		auto faceRect = cv::Rect(faceX, faceY, faceWidth, faceHeight);
-		DetectionEye(img(faceRect), eyes);
+		std::vector<cv::Rect> eyes;
+		if (faceWidth > 0 && faceHeight > 0)
+		{
+			DetectionEye(img(faceRect), eyes);
+		}
 
 		if (eyes.size() >= 2) {
 			auto eye_center1 = cv::Point2f(faces[0].x + eyes[0].x + static_cast<float>( eyes[0].width ) / 2, faces[0].y + eyes[0].y + static_cast<float>( eyes[0].height ) / 2);
@@ -60,16 +63,19 @@ void Haha::GlassFilterImpl::Affect(cv::Mat& img)
 			auto glass_x = center_point.x - glass_width * 0.5f;
 			auto glass_y = center_point.y - glass_height * 0.5f;
 
-			cv::Mat new_glass;
-			cv::resize(_glass_res, new_glass, cv::Size(glass_width, glass_height));
+			auto glass_new_x = glass_x <= 0 ? 0 : glass_x;
+			glass_new_x = glass_new_x > img.cols ? img.cols : glass_new_x;
+			auto glass_new_y = glass_y <= 0 ? 0 : glass_y;
+			glass_new_y = glass_new_y > img.rows ? img.rows : glass_new_y;
+			auto glass_new_width = glass_new_x + glass_width >= img.cols ? img.cols - glass_new_x : glass_width;
+			auto glass_new_height = glass_new_y + glass_height >= img.rows ? img.rows - glass_new_y : glass_height;
+			auto glass_new_rect = cv::Rect(glass_new_x, glass_new_y, glass_new_width, glass_new_height);
 
-			std::cout << "eyes_distance: " << eyes_distance << ", glass_width: " << glass_width << ", glass_height: " << glass_height << std::endl;
-			std::cout << "glass_x " << glass_x << ", glass_y: " << glass_x << ", calc width: " << (glass_x + glass_width > img.cols ? img.cols - glass_x : glass_width) 
-				<< ", calc height: " << (glass_y + glass_height > img.rows ? img.rows - glass_y : glass_height) << std::endl;
-			cv::Mat imageROI = img(cv::Rect(
-									glass_x < 0 ? 0 : glass_x, glass_y < 0 ? 0 : glass_y,
-									glass_x + glass_width > img.cols ? img.cols - glass_x : glass_width,
-									glass_y + glass_height > img.rows ? img.rows - glass_y : glass_height));
+			cv::Mat new_glass;
+			cv::resize(_glass_res, new_glass, cv::Size(glass_new_width, glass_new_height));
+
+			std::cout << "glass rect: " << glass_new_rect << std::endl;
+			cv::Mat imageROI = img(glass_new_rect);
 			cv::addWeighted(imageROI, 1.0, new_glass, 1, 0, imageROI);
 		}
 
