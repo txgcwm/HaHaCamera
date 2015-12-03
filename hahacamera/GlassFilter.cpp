@@ -9,9 +9,9 @@ Haha::GlassFilterImpl::GlassFilterImpl()
 	, _eyeCascadeFileName("resources/haarcascade_eye_tree_eyeglasses.xml")
 	, _eye_cascade(nullptr)
 	, _glass_res(cv::imread("resources/glass.png"))
-	, _missingObject(true)
+	, _missingFaceObject(true)
 	, _trackObject(-1)
-	, _vmin(10)
+	, _vmin(20)
 	, _vmax(256)
 	, _smin(30)
 {
@@ -86,7 +86,7 @@ void Haha::GlassFilterImpl::Affect(cv::Mat& img)
 bool Haha::GlassFilterImpl::DetectionFace(cv::Mat& img, std::vector<cv::Rect>& faces)
 {
 	if (nullptr == _face_cascade || _face_cascade->empty()) { return false; }
-	if (_missingObject) //use CascadeClassifier
+	if (_missingFaceObject) //use CascadeClassifier
 	{
 		cv::Mat gray_img;
 		cvtColor(img, gray_img, CV_BGR2GRAY);
@@ -94,9 +94,9 @@ bool Haha::GlassFilterImpl::DetectionFace(cv::Mat& img, std::vector<cv::Rect>& f
 		_face_cascade->detectMultiScale(img, faces, 1.1, 3, 0 | CV_HAAR_SCALE_IMAGE, cv::Size(30, 30), cv::Size(0, 0));
 		if (faces.size() >= 1)
 		{
-			_missingObject = false;
+			_missingFaceObject = false;
 			_trackObject = -1;
-			_lastRect = cv::Rect(faces[0]);
+			_lastFaceRect = cv::Rect(faces[0]);
 		}
 		return true;
 	}
@@ -115,7 +115,7 @@ bool Haha::GlassFilterImpl::DetectionFace(cv::Mat& img, std::vector<cv::Rect>& f
 
 		if (_trackObject < 0)
 		{
-			cv::Mat roi(_hue_img, _lastRect), maskroi(mask_img, _lastRect);
+			cv::Mat roi(_hue_img, _lastFaceRect), maskroi(mask_img, _lastFaceRect);
 			calcHist(&roi, 1, 0, maskroi, _hist_img, 1, &hsize, &phranges);
 			cv::normalize(_hist_img, _hist_img, 0, 255, CV_MINMAX);
 			_trackObject = 1;
@@ -132,18 +132,18 @@ bool Haha::GlassFilterImpl::DetectionFace(cv::Mat& img, std::vector<cv::Rect>& f
 		cv::calcBackProject(&_hue_img, 1, 0, _hist_img, _backproj_img, &phranges);
 		_backproj_img &= mask_img;
 
-		cv::RotatedRect trackBox = cv::CamShift(_backproj_img, _lastRect,
+		cv::RotatedRect trackBox = cv::CamShift(_backproj_img, _lastFaceRect,
 			cv::TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 10, 1));
 		if (trackBox.size.width < 60 || trackBox.size.height < 60)
 		{
 			_trackObject = -1;
-			_missingObject = true;
+			_missingFaceObject = true;
 		}
-		if (_lastRect.area() <= 1)
+		if (_lastFaceRect.area() <= 1)
 		{
 			int cols = _backproj_img.cols, rows = _backproj_img.rows, r = (std::min(cols, rows) + 5) / 6;
-			_lastRect = cv::Rect(_lastRect.x - r, _lastRect.y - r,
-				_lastRect.x + r, _lastRect.y + r) &
+			_lastFaceRect = cv::Rect(_lastFaceRect.x - r, _lastFaceRect.y - r,
+				_lastFaceRect.x + r, _lastFaceRect.y + r) &
 				cv::Rect(0, 0, cols, rows);
 		}
 

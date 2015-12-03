@@ -19,11 +19,11 @@ namespace Haha
 		std::shared_ptr<cv::CascadeClassifier> _eye_cascade;
 		const std::string _eyeCascadeFileName;
 		cv::Mat _glass_res;
-		cv::Rect _lastRect;
+		cv::Rect _lastFaceRect;
 		int _vmin;
 		int _vmax;
 		int _smin;
-		bool _missingObject;
+		bool _missingFaceObject;
 		int _trackObject;
 		cv::Mat _hue_img;
 		cv::Mat _hist_img;
