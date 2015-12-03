@@ -49,7 +49,8 @@ void Haha::GlassFilterImpl::Affect(cv::Mat& img)
 		std::vector<cv::Rect> eyes;
 		if (faceWidth > 0 && faceHeight > 0)
 		{
-			DetectionEye(img(faceRect), eyes);
+			cv::Mat selected = cv::Mat(img, faceRect);
+			DetectionEye(selected, eyes);
 		}
 
 		if (eyes.size() >= 2) {

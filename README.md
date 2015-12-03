@@ -4,3 +4,14 @@
 * 拥有物件跟踪、物件识别、机器学习各种实例
 * 可方便扩展式新增过滤器
 ** GlassFilter
+
+# Build
+
+```
+brew install opencv3
+cd HaHaCamera
+mkdir build; cd build
+cmake .. && make
+cd ../hahacamera
+../build/cam
+```
