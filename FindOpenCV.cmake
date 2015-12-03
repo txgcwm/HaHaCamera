@@ -30,6 +30,8 @@
 #     target_link_libararies.
 #
 #
+# Source code: https://bitbucket.org/sergiu/opencv-cmake
+#
 # Copyright (c) 2014 Sergiu Dotenco
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
