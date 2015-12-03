@@ -24,6 +24,9 @@
     <ClCompile Include="FilterManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="CarGameFilter.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GlassFilter.hpp">
@@ -36,6 +39,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="FilterManager.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="CarGameFilter.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

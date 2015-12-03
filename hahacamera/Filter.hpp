@@ -6,6 +6,7 @@ namespace Haha
 	enum class FilterType
 	{
 		GlassFilter,
+		CarGameFilter,
 	};
 	class Filter
 	{

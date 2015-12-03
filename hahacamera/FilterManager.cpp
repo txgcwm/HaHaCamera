@@ -1,6 +1,7 @@
 #include "Global.hpp"
 #include "FilterManager.hpp"
 #include "GlassFilter.hpp"
+#include "CarGameFilter.hpp"
 
 Haha::FilterManager::FilterManager()
 {
@@ -15,6 +16,10 @@ bool Haha::FilterManager::AddFilter(FilterType type)
 	if (type == FilterType::GlassFilter)
 	{
 		_filters.push_back(std::make_shared<Haha::GlassFilterImpl>());
+	}
+	else if (type == FilterType::CarGameFilter)
+	{
+		_filters.push_back(std::make_shared<Haha::CarGameFilterImpl>());
 	}
 	return true;
 }

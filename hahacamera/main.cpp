@@ -5,7 +5,8 @@
 int main(int argc, char *args[])
 {
 	Haha::FilterManager filterMgr;
-	filterMgr.AddFilter(Haha::FilterType::GlassFilter);
+	//filterMgr.AddFilter(Haha::FilterType::GlassFilter);
+	filterMgr.AddFilter(Haha::FilterType::CarGameFilter);
 	cv::Mat frame;
 	cv::VideoCapture camera(0);
 	if (!camera.isOpened())

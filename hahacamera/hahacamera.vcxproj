@@ -151,11 +151,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CarGameFilter.cpp" />
     <ClCompile Include="FilterManager.cpp" />
     <ClCompile Include="GlassFilter.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CarGameFilter.hpp" />
     <ClInclude Include="Filter.hpp" />
     <ClInclude Include="FilterManager.hpp" />
     <ClInclude Include="GlassFilter.hpp" />
