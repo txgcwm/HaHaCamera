@@ -11,6 +11,8 @@ Haha::CarGameFilterImpl::CarGameFilterImpl()
 	, _vmin(20)
 	, _vmax(256)
 	, _smin(30)
+	, _background_img(cv::imread("resources/road.jpg"))
+	, _car_img(cv::imread("resources/car.png"))
 {
 	_face_cascade = std::make_shared<cv::CascadeClassifier>();
 	auto ret = _face_cascade->load(_faceCascadeFileName);
@@ -26,6 +28,12 @@ Haha::CarGameFilterImpl::~CarGameFilterImpl()
 
 void Haha::CarGameFilterImpl::Affect(cv::Mat& img)
 {
+	//resize background picutre
+	if (img.cols != _background_img.cols || img.rows != _background_img.rows)
+	{
+		cv::resize(_background_img, _background_img, cv::Size(img.cols, img.rows));
+	}
+
 	std::vector<cv::Rect> faces;
 	DetectionFace(img, faces);
 
@@ -42,6 +50,22 @@ void Haha::CarGameFilterImpl::Affect(cv::Mat& img)
 		if (faceWidth > 0 && faceHeight > 0)
 		{
 			cv::rectangle(img, faceRect, cv::Scalar(0, 255, 0), 3);
+			cv::Mat gameMat;
+			_background_img.copyTo(gameMat);
+
+			auto center_x = faceRect.x + faceRect.width * 0.5;
+			auto car_x = center_x - _car_img.cols;
+			car_x = car_x < 0 ? 0 : car_x;
+			car_x = car_x + _car_img.cols > gameMat.cols ? gameMat.cols - _car_img.cols : car_x;
+			auto car_y = gameMat.rows - _car_img.rows - 20;
+
+			//cv::getPerspectiveTransform(srcTri, dstTri, warp_mat);
+			//cv::warpPerspective(_car_img, new_car_img, warp_mat);
+
+			cv::Mat imageROI = gameMat(cv::Rect(car_x, car_y, _car_img.cols, _car_img.rows));
+			cv::addWeighted(imageROI, 1.0, _car_img, 1, 0, imageROI);
+			cv::imshow("CarGame", gameMat);
+			
 		}
 	}
 }

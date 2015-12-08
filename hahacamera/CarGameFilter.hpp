@@ -24,5 +24,9 @@ namespace Haha
 		cv::Mat _hue_img;
 		cv::Mat _hist_img;
 		cv::Mat _backproj_img;
+		const std::string _backgroundFileName;
+		cv::Mat _background_img;
+		const std::string _carFileName;
+		cv::Mat _car_img;
 	};
 }
